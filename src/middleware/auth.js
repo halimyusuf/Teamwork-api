@@ -108,7 +108,7 @@ export default class Auth {
       })
       .withMessage("must be at least 10 chars long"),
 
-      check("content")
+      check("article")
       .trim()
       .isString()
       .isLength({

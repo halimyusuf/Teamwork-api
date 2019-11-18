@@ -44,7 +44,7 @@ export default class EmployeeCommentController {
                     query(queryStr, values)
                         .then(row => {
                             const message = helper.genMsg("Comment successfully created", null, row.rows[0].createdOn)
-                            message.gifTitle = gif.rows[0].title
+                            message.data.gifTitle = gif.rows[0].title
                             message.data.gifId = req.params.id
                             message.data.comment = row.rows[0].comment
                             res.status(201).json(message);

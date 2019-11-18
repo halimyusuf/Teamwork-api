@@ -203,7 +203,7 @@ describe("Articles, gifs and comments api ", () => {
                 .field("title", "This is the gif title")
                 .set("Content-Type", "application/x-www-form-urlencoded")
                 .set("tw-auth-token", token)
-                .attach("gif", "./test/- nofilter.jpg")
+                .attach("image", "./test/- nofilter.jpg")
                 .expect(200, done);
         });
     });
@@ -235,13 +235,13 @@ describe("Articles, gifs and comments api ", () => {
 
 
     describe("POST/PATCH /api/v1 for articles ", () => {
-        let title, content, id, category;
+        let title, article, id, category;
         const exec = async () =>
             await request(app)
             .post(`/api/v1/articles`)
             .send({
                 title,
-                content,
+                article,
                 category
             })
             .set("tw-auth-token", token);
@@ -251,13 +251,13 @@ describe("Articles, gifs and comments api ", () => {
             .patch(`/api/v1/articles/${id}`)
             .send({
                 title,
-                content,
+                article,
                 category
             })
             .set("tw-auth-token", token);
 
         beforeEach(() => {
-            content = "Justo nonumy ea amet magna sit aliquyam ipsum et accusam. Takimata amet sed kasd aliqu.";
+            article = "Justo nonumy ea amet magna sit aliquyam ipsum et accusam. Takimata amet sed kasd aliqu.";
             title = "Cospetto quel al che e e le cose. Tal cosa furono fosse noi a il di. E e.";
             id = 1;
             category = 1
@@ -281,8 +281,8 @@ describe("Articles, gifs and comments api ", () => {
             expect(res.status).to.equal(422);
         });
 
-        it("Should  422 if content is less than 30 chars", async () => {
-            content = "this is a content";
+        it("Should  422 if article is less than 30 chars", async () => {
+            article = "this is a article";
             const res = await exec();
             expect(res.status).to.equal(422);
         });
@@ -301,7 +301,7 @@ describe("Articles, gifs and comments api ", () => {
 
         it("Should  200 if patch is success", async () => {
             title = "This is the new article title";
-            content = "this is the new article content";
+            article = "this is the new article article";
             const res = await exec_patch();
             expect(res.status).to.equal(200);
         });

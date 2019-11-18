@@ -1,10 +1,8 @@
 /node_modules
 src/keeps.js
-/node_modules
 npm-debug.log
 .DS_Store
 /*.env
 /*.eslintrc.js
 /.nyc_output
 src/database/table.js
-.coveralls.yml

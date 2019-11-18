@@ -35,7 +35,7 @@ export default class AdminController {
         const token = helper.generateToken(user.rows[0].id, username, user.rows[0].isAdmin);
         const msg = "User account successfully created";
         const message = helper.genMsg(msg, token, user.rows[0].id);
-        res.header("tw-auth-token", token).status(201).json(message);
+        res.status(201).json(message);
       })
       .catch(err => res.status(400).json(helper.genErrMsg(err)));
   }

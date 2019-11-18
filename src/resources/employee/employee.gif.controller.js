@@ -14,7 +14,7 @@ export default class EmployeeGifController {
         const errors = validationResult(req);
         if (!errors.isEmpty())
             return res.status(422).json(helper.genErrMsg(errors.array()));
-        const gif = req.files.gif
+        const gif = req.files.image
         if (gif.mimetype.split("/")[0] != 'image') {
             res.status(400).json(helper.genErrMsg("Only image and gifs are allowed"))
         }
@@ -33,7 +33,13 @@ export default class EmployeeGifController {
     }
 
     deleteGif(req, res) {
-        query(`DELETE FROM gif WHERE id=$1 returning *`, [req.params.id])
+        let queryStr = `DELETE FROM gif WHERE id=($1) returning *`
+        let values = [req.params.id]
+        if (!req.user.isAdmin) {
+            queryStr = `DELETE FROM gif WHERE id=($1) AND "authorId"=$2 returning *`
+            values = [...values, req.user.id]
+        }
+        query(queryStr, values)
             .then(gif => {
                 if (!gif.rows[0])
                     return res.status(404).json(helper.genErrMsg("Gif not found"))
@@ -62,7 +68,7 @@ export default class EmployeeGifController {
                 if (gif.rows[0]) {
                     query(`SELECT * FROM comment WHERE "gifId"=$1 ORDER BY id ASC`, [req.params.id])
                         .then(comment => {
-                            const message = helper.genMsg(200)
+                            const message = helper.genMsg(null)
                             message.data.id = gif.rows[0].id
                             message.data.title = gif.rows[0].title
                             message.data.createdOn = gif.rows[0].createdOn

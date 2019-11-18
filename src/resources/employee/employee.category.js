@@ -14,7 +14,10 @@ export default class EmployeeCategoryController {
         const values = [req.body.name];
         query(queryStr, values)
             .then(category => {
-                res.status(201).json(helper.genMsg("Category successfully posted", category.rows[0].id))
+                const message = helper.genMsg("Category successfully posted")
+                message.data.id = category.rows[0].id
+                message.data.name = category.rows[0].name
+                res.status(201).json(message)
             })
             .catch(err => res.status(400).json(helper.genErrMsg(err)));
     }
