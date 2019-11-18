@@ -75,6 +75,16 @@ export default class AdminController {
       })
       .catch(err => res.status(400).json(helper.genErrMsg(err)));
   }
+  
+  getEmployee(req, res) {
+    query(`SELECT * FROM employee WHERE id=$1`, [req.user.id])
+      .then(user => {
+        let message = helper.genMsg(null)
+        message.data = user.rows[0]
+        if (user.rows[0]) res.status(200).json(message);
+      })
+      .catch(err => res.status(400).json(helper.genErrMsg(err)))
+  }
 
   removeEmployee(req, res) {
     query("DELETE FROM employee WHERE id= $1 returning *", [req.params.id])
