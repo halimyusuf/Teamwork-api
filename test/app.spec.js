@@ -124,13 +124,14 @@ describe("Admin-api/users", () => {
     });
 
     describe("GET /api/v1/users", () => {
-        let tok;
+        let tok, param;
         const exec = async () =>
             await request(app)
-            .get(`/api/v1/users`)
+            .get(`/api/v1/${param}`)
             .set("tw-auth-token", tok);
         beforeEach(() => {
             tok = token;
+            param = "users"
         });
         it("should get all users", async () => {
             const res = await exec();
@@ -142,6 +143,17 @@ describe("Admin-api/users", () => {
             expect(res.status).to.equal(401);
         });
 
+        it("should get all users", async () => {
+            param = "user"
+            const res = await exec();
+            expect(res.status).to.equal(200);
+        });
+        it("should return 401 if token is invalid", async () => {
+            param = "user"
+            tok = 333333;
+            const res = await exec();
+            expect(res.status).to.equal(401);
+        });
     });
 });
 
