@@ -7,14 +7,16 @@ const helper = new Helper();
 
 export default class AdminController {
   createUser(req, res) {
+
+    if (!req.user.isAdmin)
+      return res.status(403).json(helper.genErrMsg("Access denied."));
+
     const errors = validationResult(req);
     if (!errors.isEmpty())
       return res.status(422).json(helper.genErrMsg(errors.array()));
 
-    if (req.body.isadmin === undefined) req.body.isAdmin = false
-
-    const queryStr = `INSERT INTO employee( "firstName", "lastName", email, password, gender, "jobRole", department, address, "createdOn", "isAdmin")
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning *`;
+    const queryStr = `INSERT INTO employee( "firstName", "lastName", email, password, gender, "jobRole", department, address, "createdOn")
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) returning *`;
     const hash = helper.hashPassword(req.body.password);
     const values = [
       req.body.firstName,
@@ -25,8 +27,7 @@ export default class AdminController {
       req.body.jobRole,
       req.body.department,
       req.body.address,
-      new Date(),
-      req.body.isAdmin
+      new Date()
     ];
     query(queryStr, values)
       .then(user => {
@@ -67,15 +68,19 @@ export default class AdminController {
   }
 
   getEmployees(req, res) {
+    if (!req.user.isAdmin)
+      return res.status(403).json(helper.genErrMsg("Access denied."));
     const queryStr = `SELECT * FROM employee`;
     query(queryStr)
       .then(user => {
-        if (user.rows[0]) res.status(200).json(helper.genMsg(user.rows));
+        let message = helper.genMsg(null)
+        message.data = user.rows
+        if (user.rows[0]) res.status(200).json(message);
         else res.status(404).json(helper.genErrMsg("No employee found"));
       })
       .catch(err => res.status(400).json(helper.genErrMsg(err)));
   }
-  
+
   getEmployee(req, res) {
     query(`SELECT * FROM employee WHERE id=$1`, [req.user.id])
       .then(user => {
@@ -87,14 +92,14 @@ export default class AdminController {
   }
 
   removeEmployee(req, res) {
+    if (!req.user.isAdmin)
+      return res.status(403).json(helper.genErrMsg("Access denied."));
     query("DELETE FROM employee WHERE id= $1 returning *", [req.params.id])
       .then(user => {
         if (user.rows[0]) {
           res.status(200).json(helper.genMsg("User account deleted successfully"));
         } else res.status(404).json(helper.genErrMsg("User not found"));
       })
-      .catch(err => {
-        res.status(400).json(helper.genErrMsg(err));
-      });
+      .catch(err => res.status(400).json(helper.genErrMsg(err)));
   }
 }

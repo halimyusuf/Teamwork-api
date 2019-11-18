@@ -36,7 +36,7 @@ export default class EmployeeGifController {
         query(`DELETE FROM gif WHERE id=$1 returning *`, [req.params.id])
             .then(gif => {
                 if (!gif.rows[0])
-                    res.status(404).json(helper.genErrMsg("Gif not found"))
+                    return res.status(404).json(helper.genErrMsg("Gif not found"))
                 if (gif.rows[0].authorId == req.user.id || req.user.isAdmin == true) {
                     query(`DELETE FROM comment WHERE "gifId"=$1 `, [req.params.id])
                         .then(() => {

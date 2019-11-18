@@ -28,4 +28,5 @@ export default class EmployeeCategoryController {
             })
             .catch(err => res.status(400).json(helper.genErrMsg(err)));
     }
+
 }

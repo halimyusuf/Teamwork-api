@@ -6,11 +6,9 @@ const controller = new adminController();
 const auth = new Auth();
 // const app =  express()
 
-adminRouter.post("/auth/create-user", [...auth.verifySignup()], controller.createUser);
+adminRouter.post("/auth/create-user", [auth.verifyToken, ...auth.verifySignup()], controller.createUser);
 adminRouter.post("/auth/signin", controller.signIn);
 adminRouter.get("/users", auth.verifyToken, controller.getEmployees);
-adminRouter.delete("/users/:id", [auth.verifyToken, auth.verifyAdmin], controller.removeEmployee);
+adminRouter.delete("/users/:id", auth.verifyToken, controller.removeEmployee);
 adminRouter.get("/user", auth.verifyToken, controller.getEmployee)
-
-
 export default adminRouter;
