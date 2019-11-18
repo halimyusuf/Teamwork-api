@@ -10,5 +10,7 @@ adminRouter.post("/auth/create-user", [...auth.verifySignup()], controller.creat
 adminRouter.post("/auth/signin", controller.signIn);
 adminRouter.get("/users", auth.verifyToken, controller.getEmployees);
 adminRouter.delete("/users/:id", [auth.verifyToken, auth.verifyAdmin], controller.removeEmployee);
+adminRouter.get("/user", auth.verifyToken, controller.getEmployee)
+
 
 export default adminRouter;
