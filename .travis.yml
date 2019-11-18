@@ -20,3 +20,4 @@ after_success:
   - npm install istanbul
   - npm install coveralls
   - npm run coveralls
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
